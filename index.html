@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
@@ -46,6 +47,49 @@
             background-color: #f3f4f6;
             cursor: not-allowed;
         }
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+@font-face {
+  font-family: "Font Awesome 5 Free";
+  font-style: normal;
+  font-weight: 900;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-solid-900.woff2") format("woff2");
+}
+.fa, .fas { font-family: "Font Awesome 5 Free"; font-weight: 900; }
+.fa-trash-alt:before { content: "\f2ed"; }
+.fa-arrow-up:before { content: "\f062"; }
+.fa-arrow-down:before { content: "\f063"; }
+</style>
+
+<style>
+@font-face {
+  font-family: "Font Awesome 5 Free";
+  font-style: normal;
+  font-weight: 900;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-solid-900.woff2") format("woff2");
+}
+.fa, .fas { font-family: "Font Awesome 5 Free"; font-weight: 900; }
+.fa-trash-alt:before { content: "\f2ed"; }
+.fa-arrow-up:before { content: "\f062"; }
+.fa-arrow-down:before { content: "\f063"; }
+</style>
+
+<style>
+    /* Tambahkan atau perbarui blok style ini */
+    .mapel-item.opacity-50 {
+        opacity: 0.5;
+        border-style: dashed;
+    }
+    .mapel-handle {
+        /* Kursor berubah menjadi 'grab' saat mouse di atas ikon */
+        cursor: grab; 
+        padding: 5px; /* Memperluas area klik/sentuh */
+    }
+    .mapel-item:active .mapel-handle {
+        /* Kursor berubah saat sedang di-drag */
+        cursor: grabbing; 
+    }
+</style>
     </style>
 </head>
 <body class="bg-gray-100">
@@ -74,7 +118,7 @@
         <!-- Main Content --><main class="flex-1 flex flex-col overflow-hidden">
             <div class="no-print bg-white shadow-md p-4 flex justify-between items-center">
                 <h1 id="page-title" class="text-xl font-semibold text-gray-700">Beranda</h1>
-                <p class="text-sm text-gray-500">INI eRAPORT KITA</p>
+                <p class="text-sm text-gray-500">eRAPORT SDN DI TANAH BUMBU</p>
             </div>
             <div class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 
@@ -598,12 +642,13 @@
 
 
     <script>
+    
     document.addEventListener('DOMContentLoaded', async function() {
         // --- DATABASE SETUP ---
-        let db = {};
-        let isDevMode = false; // Flag to check if developer mode is on
-        let siswaIdentitasTerpilihId = null; // ID siswa untuk form identitas
-        let lastPageBeforePrint = 'page-input-nilai'; // Lacak halaman terakhir
+        window.db = {};
+        window.isDevMode = false; // Flag to check if developer mode is on
+        window.siswaIdentitasTerpilihId = null; // ID siswa untuk form identitas
+        window.lastPageBeforePrint = 'page-input-nilai'; // Lacak halaman terakhir
         const masterPassword = 'rahasia2025'; // Kata sandi induk untuk reset
         
         async function loadDatabase() {
@@ -696,6 +741,29 @@
                     { elemen: "Sejarah Kebudayaan Islam (SKI)", tp: "Mengenal kisah teladan Nabi Muhammad SAW dan mencontoh akhlaknya dalam kehidupan sehari-hari." },
                     { elemen: "Refleksi", tp: "Peserta didik menyadari bahwa beriman, beribadah, dan berakhlak baik adalah bentuk cinta kepada Allah dan sesama." }
                 ],
+                "Pendidikan Agama Hindu": [
+                    { elemen: "Kiida Susilaweda", tp: "Menyebutkan dan Memahami Tri Murti (Brahma, Wisnu, Siwa), sifat-sifat Dewa Brahma dan Wisnu sebagai pencipta serta pemelihara hidup." },
+                    { elemen: "Itis-Sutad", tp: "Menyebutkan Subha dan Asubha Karmas, serta Tri Guna (Sattwam, Rajas, Tamas)." },
+                    { elemen: "Ajaran Susila", tp: "Memahami Canang (sesajen) dan bentuk-bentuk upakara sederhana sebagai wujud ketulusan umat Hindu di Indonesia." }
+                
+                ],
+                    "Pendidikan Agama Kriten Protestan": [
+                    { elemen: "Allah Berkarya", tp: "Mampu menjelaskan bahwa Allah menciptakan dirinya sebagai pribadi istimewa dan memahami pemeliharaan Allah melalui keluarga." },
+                    { elemen: "Manusia dan Nilai-nilai Kristiani", tp: "Mampu menjelaskan bahwa dirinya bertumbuh dan berkembang serta menghubungkan nilai kebaikan, keramahan, dan kesopanan dalam kehidupan sehari-hari." },
+                    { elemen: "Gereja dan Masyarakat Majemuk", tp: "Mampu menjelaskan fungsi gereja sebagai tempat beribadah dan mengaitkan keragaman suku bangsa sebagai ciptaan Allah." },
+                    { elemen: "Al-Qur’an dan Hadis", tp: "mampu menjelaskan bahwa alam adalah ciptaan Allah dan menghubungkannya dengan tugas untuk memelihara lingkungan di rumah dan sekolah." }
+                    
+                ],
+                    "Pendidikan Agama Katolik": [
+                    { elemen: "Akidah", tp: "." },
+                    { elemen: "Akhlak", tp: "." },
+                    { elemen: "Ibadah", tp: "." },
+                    { elemen: "Al-Qur’an dan Hadis", tp: "." },
+                    { elemen: "Sejarah Kebudayaan Islam (SKI)", tp: "." },
+                    { elemen: "Refleksi", tp: "." }
+                           
+                
+                ],
                 "Pendidikan Pancasila": [
                     { elemen: "Pancasila", tp: "Mampu mengingat, memahami, dan menganalisis sila-sila Pancasila sebagai satu kesatuan yang utuh, serta menerapkannya dalam perilaku sehari-hari di rumah dan sekolah." },
                     { elemen: "UUD 1945", tp: "Mampu mengidentifikasi, memahami, dan menerapkan aturan yang berlaku di rumah dan di sekolah sebagai wujud pelaksanaan nilai-nilai yang sejalan dengan UUD 1945 dalam kehidupan sehari-hari." },
@@ -711,7 +779,7 @@
                     { elemen: "Refleksi", tp: "Saya belajar berbahasa Indonesia dengan baik untuk memahami, bercerita, dan bekerja sama dengan teman-teman" }
                 ],
                 "Matematika": [
-                    { elemen: "Bilangan", tp: "Mampu mengenal, membandingkan, dan mengoperasikan bilangan cacah melalui kegiatan konkret dan kontekstual untuk memahami makna nilai tempat serta penerapannya dalam kehidupan sehari-hari." },
+                    { elemen: "Bilangan", tp: "Mampu mengenal, membandingkan, dan menoperasikan bilangan cacah melalui kegiatan konkret dan kontekstual untuk memahami makna nilai tempat serta penerapannya dalam kehidupan sehari-hari." },
                     { elemen: "Aljabar", tp: "Mampu mengenali, menyusun, dan melanjutkan pola bilangan atau bentuk sederhana untuk memahami keteraturan dan hubungan antarunsur dalam kehidupan sehari-hari." },
                     { elemen: "Pengukuran", tp: "Mampu mengenal dan menggunakan satuan baku maupun tidak baku untuk mengukur panjang, berat, dan waktu melalui pengalaman nyata di lingkungan sekitar." },
                     { elemen: "Geometri", tp: "Mampu mengenal, mengidentifikasi, dan menggambarkan bangun datar serta bangun ruang sederhana berdasarkan bentuk dan sifat-sifatnya melalui kegiatan eksploratif." },
@@ -768,6 +836,26 @@
                     { elemen: "Al-Qur’an dan Hadis", tp: "Membaca dan menghafal surat-surat pendek pilihan serta mengamalkan ajarannya dalam kehidupan sehari-hari." },
                     { elemen: "Sejarah Kebudayaan Islam (SKI)", tp: "Mengenal kisah perjuangan Nabi dan sahabatnya, serta meneladani semangat dan kejujuran mereka." },
                     { elemen: "Refleksi", tp: "Peserta didik memahami bahwa iman, ibadah, dan akhlak baik adalah dasar menjadi muslim yang taat dan berkarakter mulia." }
+                ],
+                    "Pendidikan Agama Hindu": [
+                    { elemen: "Kiida Susilaweda", tp: "Mengenal Swadharma, menyebutkan hari-hari suci Hindu, serta meneladani kisah hidup Dewa Wisnu sebagai Tri Murti pemelihara." },
+                    { elemen: "Itis-Sutad", tp: "Menyebutkan Tri Parartha dan Catur Purusartha." },
+                    { elemen: "Ajaran Susila", tp: "Memahami hari suci dan tempat suci agama Hindu sesuai kehidupan lokal, mampu menjelaskan sejarah Hindu, serta mengenal tokoh-tokoh perkembangan Hindu di Indonesia." }
+                   
+                ],
+                    "Pendidikan Agama Kriten Protestan": [
+                    { elemen: "Allah Berkarya", tp: "Mampu menjelaskan bahwa Allah menciptakan makhluk hidup, memelihara mereka, serta menghubungkannya dengan peran Allah sebagai penyelamat dan pembaru." },
+                    { elemen: "Manusia dan Nilai-nilai Kristiani", tp: "Mampu menjelaskan dirinya sebagai makhluk individu dan sosial, serta menghubungkan sikap disiplin sebagai wujud nilai Kristiani." },
+                    { elemen: "Gereja dan Masyarakat Majemuk", tp: "Mampu menjelaskan tugas panggilan gereja untuk bersatu, bersaksi, dan melayani, serta menghubungkannya dengan keragaman budaya dan agama sebagai anugerah Allah." },
+                    { elemen: "Alam dan Lingkungan Hidup", tp: "Mampu menjelaskan bahwa Allah hadir dalam fenomena alam dan menghubungkannya dengan kewajiban memelihara lingkungan sekitar." }
+              
+                ],
+                    "Pendidikan Agama Katolik": [
+                    { elemen: "Pribadi Peserta Didik", tp: "enumbuhkan iman melalui perbuatan baik, mengenali keunikan diri, serta hidup bersyukur dan berkembang bersama lingkungan" },
+                    { elemen: "Yesus Kristus", tp: "Memahami karya keselamatan Allah, Sepuluh Perintah Allah, perjalanan bangsa Israel, serta peran Yesus sebagai pembawa Kerajaan Allah." },
+                    { elemen: "Gereja", tp: "Mengenal sakramen-sakramen utama dan menghayati doa dalam kehidupan sehari-hari" },
+                    { elemen: "Masyarakat", tp: "Menghidupi iman melalui sikap hormat, menjaga tradisi dan lingkungan, serta menghargai keluarga dan sesama" },
+                    
                 ],  
                  "Pendidikan Pancasila": [
                     { elemen: "Pancasila", tp: "Memahami, menganalisis, dan menerapkan nilai-nilai sila-sila Pancasila dalam kehidupan sehari-hari di sekolah dan rumah, dengan menunjukkan sikap gotong royong, tanggung jawab, dan menghargai perbedaan." },
@@ -806,13 +894,6 @@
                     { elemen: "Pemanfaatan Gerak", tp: "Memahami manfaat aktivitas jasmani, pola makan, dan istirahat teratur dalam menjaga kesehatan tubuh, serta menerapkannya dalam kehidupan sehari-hari." },
                     { elemen: "Pengembangan Karakter dan Internalisasi Nilai Gerak", tp: "Menunjukkan sikap sportivitas, disiplin, tanggung jawab, kerja sama, dan menghargai perbedaan saat berolahraga atau bermain bersama teman." },
                     { elemen: "Refleksi", tp: "Saya belajar bergerak dengan terampil, hidup sehat, dan bersikap sportif agar tubuh kuat, pikiran segar, dan hubungan dengan teman semakin baik" }
-                ],
-                "Seni Rupa": [
-                    { elemen: "Mengalami", tp: "Mengenali dan membedakan unsur rupa (garis, bentuk, warna, tekstur, ruang) dalam benda serta lingkungan sekitar dan mengeksplorasi alat, bahan, serta media seni rupa untuk menemukan efek visual dan pengalaman estetiknya" },
-                    { elemen: "Berpikir dan Bekerja Artistik", tp: "Mengembangkan ide visual berdasarkan pengalaman pribadi, budaya lokal, atau fenomena di sekitarnya dan merancang langkah kerja sederhana untuk mewujudkan gagasan visual dengan memperhatikan unsur dan prinsip rupa." },
-                    { elemen: "Menciptakan", tp: "Membuat karya dua atau tiga dimensi dengan komposisi, warna, dan bentuk yang lebih bervariasi.Siswa mengombinasikan beberapa bahan dan teknik sederhana untuk menghasilkan karya yang memiliki nilai ekspresif." },
-                    { elemen: "Merefleksikan", tp: "Mendeskripsikan proses dan hasil karyanya serta membandingkannya dengan karya orang lain secara santun dan mengemukakan alasan estetik atau perasaan pribadi yang muncul selama proses berkarya." },
-                    { elemen: "Berdampak", tp: "membuat karya seni rupa yang berkontribusi positif pada lingkungan sekolah atau komunitasnya serta menampilkan karya untuk memberikan pengalaman estetis bagi orang lain dan menumbuhkan rasa bangga terhadap budaya lokal." }
                 ],
                 "Seni Musik": [
                     { elemen: "Mengalami", tp: "Mampu mendengarkan, mengenali, dan mengapresiasi unsur-unsur musik (irama, melodi, tempo, dan dinamika) dari berbagai lagu daerah, nasional, dan lingkungan sekitar, serta menunjukkan rasa senang dan menghargai keberagaman musik." },
@@ -860,6 +941,27 @@
                     { elemen: "Al-Qur’an dan Hadis", tp: "Membaca, menghafal, dan memahami makna surat-surat pendek serta menerapkannya dalam perilaku baik." },
                     { elemen: "Sejarah Kebudayaan Islam (SKI)", tp: "Meneladani kisah Nabi dan sahabat untuk menumbuhkan semangat, kejujuran, dan kerja keras." },
                     { elemen: "Refleksi", tp: "Peserta didik memahami bahwa iman, akhlak, dan ibadah adalah wujud ketaatan kepada Allah serta pedoman berperilaku dalam kehidupan sehari-hari." }
+                ], 
+                    "Pendidikan Agama Hindu": [
+                    { elemen: "Kiida Susilaweda", tp: "Mampu menjelaskan Weda serta mengidentifikasi Tri Kona dan Indik Siswa Brahmacari sebagai dasar pemahaman ajaran Hindu." },
+                    { elemen: "Itis-Sutad", tp: "Mampu menjelaskan literatur agama dan Brahma Atic Siskah serta menghubungkannya dengan ajaran Catur Guru, Catur Asrama, Panca Yadnya, dan Manusa Yadnya sebagai dasar kewajiban spiritual umat Hindu" },
+                    { elemen: "Ajaran Susila", tp: "mampu menjelaskan sejarah Agama Hindu serta meneladani perkembangan Agama Hindu di Indonesia sebagai dasar pemahaman nilai-nilai keagamaan." }
+                   
+                ],
+                    "Pendidikan Agama Kriten Protestan": [
+                    { elemen: "Allah Berkarya", tp: "Mampu menganalisis karya Allah sebagai Pencipta, Pemelihara, Penyelamat, dan Pembaru serta menghubungkannya dengan kehidupan keluarga, sekolah, dan masyarakat." },
+                    { elemen: "Manusia dan Nilai-nilai Kristiani", tp: "Mampu menjelaskan keterbatasan manusia dan menghubungkannya dengan penerapan buah Roh dalam interaksi sosial." },
+                    { elemen: "Gereja dan Masyarakat Majemuk", tp: "Mampu menjelaskan peran gereja dalam pelayanan terhadap sesama serta menghubungkannya dengan hidup rukun dan toleransi dalam masyarakat majemuk." },
+                    { elemen: "Alam dan Lingkungan Hidup", tp: "Mampu menjelaskan kehadiran Allah melalui alam ciptaan dan menghubungkannya dengan tanggung jawab orang beriman dalam menjaga lingkungan hidup." }
+                    
+                ],
+                    "Pendidikan Agama Katolik": [
+                    { elemen: "Pribadi Peserta Didik", tp: "mengenali tubuh sebagai ciptaan Tuhan, mampu merawatnya, serta menunjukkan kepedulian kepada teman dan lingkungan." },
+                    { elemen: "Yesus Kritesu", tp: "Menguraikan bahwa Tuhan menciptakan dunia dan isinya, menceritakan secara singkat tokoh-tokoh Alkitab dan kisah kelahiran Yesus, serta menjelaskan bahwa Yesus dibesarkan di Nazaret dan berada di Bait Allah" },
+                    { elemen: "Gerja", tp: "Menunjukkan cara beriman melalui doa sederhana, mempraktikkan tindakan syukur dan permohonan, serta menghubungkan arti perintah Allah dengan tindakan sehari-hari." },
+                    { elemen: "Masyarakat", tp: "Mengidentifikasi lingkungan keluarga dan sekolah, menjelaskan cara bekerja sama dengan teman dan keluarga, serta menunjukkan kebiasaan hidup rukun dan peduli lingkungan." }
+                   
+               
                 ],
                  "Pendidikan Pancasila": [
                     { elemen: "Pancasila", tp: "Memahami makna setiap sila Pancasila dan mampu menerapkannya dalam kehidupan sehari-hari melalui sikap gotong royong, keadilan, dan tanggung jawab." },
@@ -914,13 +1016,6 @@
                     { elemen: "Kolaborasi dan Penampilan", tp: "Dapat bekerja sama dalam kelompok musik, menampilkan karya secara harmonis, dan menunjukkan rasa percaya diri serta sportivitas." },
                     { elemen: "Apresiasi dan Pemahaman Budaya", tp: "Mampu mengapresiasi beragam karya musik, memahami konteks budaya di balik musik, serta menghargai keberagaman ekspresi musik." },
                     { elemen: "Refleksi", tp: "Membantu siswa mengembangkan kemampuan teknis, kreatif, analitis, dan kolaboratif dalam musik, sekaligus menumbuhkan apresiasi seni dan pemahaman budaya." }
-                ],
-                "Seni Rupa": [
-                    { elemen: "Mengalami", tp: "Menganalisis unsur rupa dan prinsip desain (irama, keseimbangan, proporsi, harmoni) pada karya dan lingkungan sekitar dan mengeksplorasi berbagai media, teknik, dan gaya visual untuk memperluas pengalaman estetik dan apresiasi seni." },
-                    { elemen: "Berpikir dan Bekerja Artistik", tp: "Mengembangkan ide visual berdasarkan isu sosial, budaya lokal, atau pengalaman pribadi yang bermakna dan merancang konsep dan proses berkarya secara sistematis dengan mempertimbangkan unsur dan prinsip rupa." },
-                    { elemen: "Menciptakan", tp: "Menciptakan karya dua atau tiga dimensi yang orisinal, menggunakan berbagai teknik dan media sesuai gagasan visualnya dan enunjukkan keterampilan memilih alat, bahan, serta menata komposisi karya dengan tanggung jawab dan kerapian." },
-                    { elemen: "Merefleksikan", tp: "Mengemukakan pandangan kritis dan apresiatif terhadap karya sendiri maupun karya seniman lain dengan alasan estetik dan menilai kekuatan, kelemahan, dan pesan visual dalam karya untuk meningkatkan kualitas ekspresi berikutnya." },
-                    { elemen: "Berdampak", tp: "Menghasilkan karya yang memberi kontribusi positif bagi lingkungan, seperti kampanye visual atau dekorasi edukatif dan menampilkan karya seni rupa sebagai wujud kepedulian sosial, budaya, dan pelestarian nilai-nilai lokal." }               
                 ],
                 "Seni Drama": [
                     { elemen: "Teknik dan Ekspresi Drama", tp: "Mampu menguasai teknik dasar drama (gerak, suara, ekspresi wajah, dan bahasa tubuh) secara tepat serta mengekspresikan karakter atau emosi tokoh dengan jelas." },
@@ -2372,14 +2467,256 @@
         
         loadDatabase();
     });
+          // ==============================================================================
+// BLOK KODE BARU UNTUK MANAJEMEN MATA PELAJARAN (TERMASUK FITUR DRAG AND DROP)
+// ==============================================================================
+
+/**
+ * Fungsi untuk menambahkan event listener Drag and Drop pada setiap item mata pelajaran.
+ */
+function addDragAndDropListeners() {
+    const list = document.getElementById('daftar-mapel-container');
+    const items = list.querySelectorAll('.mapel-item');
+    let dragItem = null;
+
+    items.forEach(item => {
+        // Hanya elemen yang memiliki kelas 'mapel-handle' yang bisa memulai drag
+        item.querySelector('.mapel-handle').addEventListener('mousedown', () => {
+             item.setAttribute('draggable', 'true');
+        });
+        
+        // Atur agar item tidak lagi draggable setelah mouse dilepas
+        document.addEventListener('mouseup', () => {
+             items.forEach(i => i.removeAttribute('draggable'));
+        });
+
+
+        item.addEventListener('dragstart', (e) => {
+            if (!item.hasAttribute('draggable')) {
+                e.preventDefault();
+                return;
+            }
+
+            dragItem = item;
+            setTimeout(() => item.classList.add('opacity-50'), 0); 
+            e.dataTransfer.setData('text/plain', 'reordering'); 
+        });
+
+        item.addEventListener('dragend', () => {
+            item.classList.remove('opacity-50');
+            dragItem = null;
+            item.removeAttribute('draggable');
+
+            // Ambil urutan baru dari DOM
+            const newOrder = [...list.children]
+                             .filter(c => c.classList.contains('mapel-item'))
+                             .map(c => c.querySelector('.mapel-name').textContent.trim());
+
+            db.daftarMapel = newOrder;
+            saveDatabase();
+            renderDaftarMapel();
+            showModal('Urutan mata pelajaran berhasil diubah.');
+        });
+    });
+    
+    // LOGIKA DRAGOVER DIPINDAHKAN KE CONTAINER (EVENT DELEGATION)
+    list.addEventListener('dragover', (e) => {
+        e.preventDefault(); 
+        if (!dragItem) return; // Keluar jika tidak ada item yang diseret
+
+        // Cari elemen item yang valid di bawah kursor (selain item yang sedang diseret)
+        const target = e.target.closest('.mapel-item');
+
+        // Jika target adalah container itu sendiri (tidak ada item di bawah kursor), 
+        // atau item yang diseret adalah target, jangan lakukan apa-apa.
+        if (!target || target === dragItem) return; 
+
+        const bounding = target.getBoundingClientRect();
+        // Menghitung posisi tengah vertikal target (di mana elemen harus disisipkan)
+        const offset = bounding.y + (bounding.height / 2); 
+
+        // Jika posisi mouse (clientY) di bawah titik tengah target
+        if (e.clientY > offset) {
+            // Pindahkan item yang diseret ke posisi SETELAH target
+            list.insertBefore(dragItem, target.nextSibling);
+        } 
+        // Jika posisi mouse (clientY) di atas titik tengah target
+        else {
+            // Pindahkan item yang diseret ke posisi SEBELUM target
+            list.insertBefore(dragItem, target);
+        }
+    });
+}
+
+// ==============================================================================
+// BLOK KODE BARU DAN PERBAIKAN TOTAL UNTUK MANAJEMEN MATA PELAJARAN
+// ==============================================================================
+
+/**
+ * Fungsi untuk menambahkan event listener Drag and Drop pada setiap item mata pelajaran.
+ */
+    function addDragAndDropListeners() {
+        const list = document.getElementById('daftar-mapel-container');
+        const items = list.querySelectorAll('.mapel-item');
+        let dragItem = null;
+
+        items.forEach(item => {
+            // Hanya elemen yang memiliki kelas 'mapel-handle' yang bisa memulai drag
+            item.querySelector('.mapel-handle').addEventListener('mousedown', () => {
+                item.setAttribute('draggable', 'true');
+            });
+            
+            // Atur agar item tidak lagi draggable setelah mouse dilepas (kecuali saat dragstart)
+            document.addEventListener('mouseup', () => {
+                items.forEach(i => i.removeAttribute('draggable'));
+            });
+
+
+        item.addEventListener('dragstart', (e) => {
+            // Pastikan drag hanya dimulai jika tombol handle yang diklik
+            if (!item.hasAttribute('draggable')) {
+                e.preventDefault();
+                return;
+            }
+
+            dragItem = item;
+            // Menambahkan sedikit jeda agar elemen bisa diubah opasitasnya
+            setTimeout(() => item.classList.add('opacity-50'), 0); 
+            // Transfer data teks (wajib untuk Firefox/Chrome)
+            e.dataTransfer.setData('text/plain', 'reordering'); 
+        });
+
+        item.addEventListener('dragend', () => {
+            item.classList.remove('opacity-50');
+            dragItem = null;
+            item.removeAttribute('draggable');
+
+            // 1. Ambil urutan baru dari DOM
+            const newOrder = [...list.children]
+                             .filter(c => c.classList.contains('mapel-item'))
+                             .map(c => c.querySelector('.mapel-name').textContent.trim());
+
+            // 2. Perbarui database
+            db.daftarMapel = newOrder;
+            saveDatabase();
+
+            // 3. Re-render untuk me-refresh state dan event listeners
+            renderDaftarMapel();
+            showModal('Urutan mata pelajaran berhasil diubah.');
+        });
+
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault(); 
+            const target = e.target.closest('.mapel-item');
+
+            if (target && target !== dragItem) {
+                const bounding = target.getBoundingClientRect();
+                // **LOGIKA PERBAIKAN UTAMA:** Menghitung posisi tengah untuk penempatan yang lebih akurat
+                const offset = bounding.y + (bounding.height / 2); 
+
+                if (e.clientY > offset) {
+                    list.insertBefore(dragItem, target.nextSibling); // Pindah ke bawah
+                } else {
+                    list.insertBefore(dragItem, target); // Pindah ke atas
+                }
+            }
+        });
+    });
+}
+
+/**
+ * Fungsi untuk merender daftar mata pelajaran dengan dukungan Drag and Drop.
+ */
+function renderDaftarMapel() {
+    const container = document.getElementById('daftar-mapel-container');
+    container.innerHTML = ''; // Kosongkan container
+
+    if (db.daftarMapel.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">Belum ada mata pelajaran. Silakan tambahkan.</p>';
+        return;
+    }
+
+    db.daftarMapel.forEach((mapel, index) => {
+        const div = document.createElement('div');
+        // Tambahkan kelas mapel-item, dan cursor-grab pada handle
+        div.className = 'mapel-item flex items-center justify-between bg-gray-50 p-3 rounded-md border border-gray-200 hover:bg-gray-100 hover:shadow-sm transition duration-150 ease-in-out';
+        
+        div.innerHTML = `
+            <div class="flex items-center flex-grow">
+                <i class="fas fa-arrows-alt mapel-handle mr-3 text-gray-500 hover:text-indigo-600 transition"></i> 
+                <span class="text-gray-800 mapel-name font-medium">${mapel}</span>
+            </div>
+            <button type="button" data-index="${index}" class="btn-hapus-mapel text-red-500 hover:text-red-700 text-sm p-1 ml-2"><i class="fas fa-trash"></i></button>
+        `;
+        container.appendChild(div);
+    });
+
+    // Panggil fungsi drag and drop setelah elemen dibuat
+    addDragAndDropListeners();
+
+    // Re-attach delete listener for dynamically created buttons
+    container.querySelectorAll('.btn-hapus-mapel').forEach(button => {
+        button.addEventListener('click', () => {
+            const index = parseInt(button.dataset.index);
+            showConfirm(`Anda yakin ingin menghapus mata pelajaran "${db.daftarMapel[index]}"?`, (confirmed) => {
+                if (confirmed) {
+                    // Hapus dari data
+                    db.daftarMapel.splice(index, 1);
+                    saveDatabase();
+                    renderDaftarMapel(); // Re-render setelah penghapusan
+                }
+            });
+        });
+    });
+}
+
+// Event listener untuk menambah mapel baru (diperbarui dengan validasi dan saveDatabase)
+document.getElementById('form-tambah-mapel').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const namaMapelInput = document.getElementById('nama-mapel');
+    const namaMapel = namaMapelInput.value.trim();
+
+    if (namaMapel) {
+        if (db.daftarMapel.some(mapel => mapel.toLowerCase() === namaMapel.toLowerCase())) {
+            showModal(`Mata pelajaran "${namaMapel}" sudah ada.`);
+            return;
+        }
+        db.daftarMapel.push(namaMapel);
+        namaMapelInput.value = '';
+        saveDatabase();
+        renderDaftarMapel();
+        showModal('Mata pelajaran berhasil ditambahkan.');
+    }
+});
+// ==============================================================================
+    // === SIMPAN & MUAT DATABASE KE LOCAL STORAGE ===
+        function saveDatabase() {
+        try {
+            localStorage.setItem('eraport_db', JSON.stringify(db));
+        } catch (e) {
+            console.error('Gagal menyimpan database:', e);
+        }
+        }
+
+        function loadDatabase() {
+        try {
+            const data = localStorage.getItem('eraport_db');
+            if (data) {
+            window.db = JSON.parse(data);
+            } else {
+            window.db = { daftarMapel: [] };
+            }
+        } catch (e) {
+            console.error('Gagal memuat database:', e);
+            window.db = { daftarMapel: [] };
+        }
+        }
+
     </script>
 </body>
     <button id="generate-btn">...</button>
 
-    <script src="script.js"></script>
+
 </body>
 </html>
-
-
-
 
