@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dasbor Aplikasi Rapor Digital</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="libs/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
+        
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
@@ -47,6 +47,53 @@
             background-color: #f3f4f6;
             cursor: not-allowed;
         }
+        <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                font-size: 12px;
+            }
+
+            th, td {
+                border: 1px solid #000 !important;
+                padding: 6px;
+            }
+        }
+        </style>
+        <style>
+    /* ... (kode CSS lainnya yang sudah ada) ... */
+    
+    /* ---------------------------------------------------- */
+    /* KODE BARU UNTUK PENYELARASAN LOGO */
+    /* ---------------------------------------------------- */
+
+    /* 1. Atur Kontainer Kanan (Kunci Flexbox) */
+    /* Pastikan Anda menggunakan nama class kontainer yang benar, 
+       misalnya .content-header-right jika itu yang membungkus teks dan logo */
+    .content-header-right { 
+        display: flex;         /* Aktifkan Flexbox untuk sejajar horizontal */
+        align-items: center;   /* Sejajarkan vertikal di tengah (CENTER) */
+        gap: 8px;              /* Memberi jarak 8px antara teks dan logo */
+    }
+
+    /* 2. Atur Ukuran Logo */
+    .header-logo {
+        height: 35px; /* Tinggi yang direkomendasikan */
+        width: auto;  /* Menjaga rasio aspek */
+    }
+
+</style>
+
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <style>
 @font-face {
@@ -91,6 +138,99 @@
     }
 </style>
     </style>
+<style>
+/* ================= PRINT FIX ================= */
+@media print {
+
+    /* Hilangkan sidebar, header, tombol */
+    .sidebar, .no-print, button, nav {
+        display: none !important;
+    }
+
+    /* Kontainer rekap dibuat full page */
+    #rekap-container {
+        overflow: visible !important; 
+        width: 100% !important;
+    }
+
+    /* Tabel print full width tidak terpotong */
+    #rekap-container table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        font-size: 11px;
+    }
+
+    #rekap-container th,
+    #rekap-container td {
+        border: 1px solid #000 !important;
+        padding: 4px;
+        word-wrap: break-word; /* Supaya teks tidak keluar kolom */
+        white-space: normal !important;
+    }
+
+    /* Biar landscape */
+    @page {
+        size: potrait;
+        margin: 10mm;
+    }
+}
+<style>
+<style>
+/* ================= KHUSUS PRINT REKAP NILAI ================= */
+@media print {
+
+    /* Sembunyikan semua kecuali halaman Rekap */
+    body * {
+        visibility: hidden !important;
+    }
+
+    #page-rekap-nilai, 
+    #page-rekap-nilai * {
+        visibility: visible !important;
+    }
+
+    /* Pindahkan ke posisi paling atas agar tampil sempurna */
+    #page-rekap-nilai {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    /* Tabel agar tampil penuh tanpa scroll */
+    #rekap-container {
+        overflow: visible !important;
+        width: 100% !important;
+    }
+
+    #rekap-container table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+        font-size: 11px;
+    }
+
+    #rekap-container th,
+    #rekap-container td {
+        border: 1px solid #000 !important;
+        padding: 4px;
+        word-wrap: break-word;
+        white-space: normal !important;
+    }
+
+    /* Landscape khusus untuk HALAMAN REKAP SAJA */
+    @page {
+        size: landscape;
+        margin: 10mm;
+    }
+}
+</style>
+
+</style>
+
+</style>
+
 </head>
 <body class="bg-gray-100">
 
@@ -118,7 +258,9 @@
         <!-- Main Content --><main class="flex-1 flex flex-col overflow-hidden">
             <div class="no-print bg-white shadow-md p-4 flex justify-between items-center">
                 <h1 id="page-title" class="text-xl font-semibold text-gray-700">Beranda</h1>
-                <p class="text-sm text-gray-500">eRAPORT SDN DI TANAH BUMBU</p>
+            <div class="navbar-right"></div>
+                <p class="text-sm text-gray-500">e-RAPORT SD TANAH BUMBU BERAKSI</p>
+                <img src="image/LOGO 1.png" alt="Logo Sekolah" class="header-logo">
             </div>
             <div class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 
@@ -247,7 +389,7 @@
                         <!-- Form Import Siswa --><div class="mb-8 p-4 border rounded-lg bg-gray-50">
                             <h3 class="font-semibold text-gray-700 mb-3">Import Data Siswa (Copy-Paste)</h3>
                             <p class="text-xs text-gray-500 mb-2">
-                                Salin data dari Excel/Sheets dan tempel di sini. Pastikan urutan kolom adalah: <strong class="font-mono">Nama Murid, NISN, Kelas, Fase</strong>. Setiap siswa berada di baris baru.
+                                Salin data dari PDF/Sheets dan tempel di sini. Pastikan urutan kolom adalah: <strong class="font-mono">Nama Murid, NISN, Kelas, Fase</strong>. Setiap siswa berada di baris baru.
                             </p>
                             <textarea id="import-data-siswa" rows="5" class="w-full rounded-md border-gray-300 shadow-sm" placeholder="Contoh:&#10;Budi Sanjaya,00123,4A,B&#10;Ani Lestari,00456,4A,B"></textarea>
                             <button id="btn-import-siswa" type="button" class="mt-2 inline-flex justify-center py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700">Import Data</button>
@@ -580,13 +722,13 @@
                     </div>
                 </div>
 
-                <!-- Page: Rekap Nilai --><div id="page-rekap-nilai" class="page-content hidden">
+                <!-- Page: Rekap Nilai --><div id="page-rekap-nilai" class="page-content hidden rekap-print">
                     <div class="bg-white p-8 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center mb-4 no-print">
                             <h2 class="text-xl font-bold text-gray-800">Rekapitulasi Nilai Siswa</h2>
-                            <button id="btn-download-excel" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-file-excel mr-2"></i>Download Excel
-                            </button>
+                            <button id="btn-download-pdf" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            <i class="fas fa-file-pdf mr-2"></i>CETAK REKAP NILAI PDF
+                        </button>
                         </div>
                         <div id="rekap-container" class="overflow-x-auto">
                             <!-- Table generated by JS --></div>
@@ -1315,69 +1457,98 @@
         }
 
         function renderRekapNilai() {
-            const container = document.getElementById('rekap-container');
-            if (db.daftarSiswa.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500">Belum ada data siswa untuk ditampilkan.</p>';
-                return;
-            }
-             if (db.daftarMapel.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500">Belum ada data mata pelajaran. Silakan atur di menu Mata Pelajaran.</p>';
-                return;
-            }
+                const container = document.getElementById('rekap-container');
 
-            let tableHTML = '<table class="w-full text-xs text-left text-gray-500 border-collapse border border-gray-300">';
-            
-            // Table Header
-            let headerHTML = '<thead class="text-xs text-gray-700 uppercase bg-gray-100"><tr class="border border-gray-300">';
-            headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">No.</th>';
-            headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">Nama Siswa</th>';
-            headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">NISN</th>';
-            db.daftarMapel.forEach(mapel => {
-                headerHTML += `<th scope="col" class="py-2 px-3 border border-gray-300 whitespace-nowrap">${mapel}</th>`;
-            });
-            headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">Jumlah</th>';
-            headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">Rata-rata</th>';
-            headerHTML += '</tr></thead>';
-            tableHTML += headerHTML;
+                // Jika tidak ada siswa, tampilkan pesan
+                if (!db.daftarSiswa || db.daftarSiswa.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-500">Belum ada data siswa untuk ditampilkan.</p>';
+                    return;
+                }
 
-            // Table Body
-            let bodyHTML = '<tbody>';
-            db.daftarSiswa.forEach((siswa, index) => {
-                let totalNilai = 0;
-                let jumlahMapelDenganNilai = 0;
+                // DAFTAR MAPEL AGAMA (tetap tampil)
+                const mapelTetap = [
+                    "Pendidikan Agama Islam",
+                    "Pendidikan Agama Kristen",
+                    "Pendidikan Agama Katolik",
+                    "Pendidikan Agama Hindu",
+                    "Pendidikan Agama Buddha",
+                    "Pendidikan Agama Konghucu"
+                ];
+
+                // Pastikan db.daftarMapel ada sebagai array
+                if (!Array.isArray(db.daftarMapel)) db.daftarMapel = [];
+
+                // Gabungkan mapelTetap + mapel lain dari db (tanpa duplikat)
+                const semuaMapel = [
+                    ...mapelTetap,
+                    ...db.daftarMapel.filter(m => !mapelTetap.includes(m))
+                ];
+
+                // Jika semuaMapel kosong (sangat mungkin tidak terjadi karena mapelTetap ada),
+                // berikan pesan agar user menambah mapel.
+                if (semuaMapel.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-500">Belum ada data mata pelajaran. Silakan atur di menu Mata Pelajaran.</p>';
+                    return;
+                }
+
+                let tableHTML = '<table class="w-full text-xs text-left text-gray-500 border-collapse border border-gray-300">';
                 
-                let rowHTML = `<tr class="bg-white border-b">`;
-                rowHTML += `<td class="py-2 px-3 border border-gray-300">${index + 1}</td>`;
-                rowHTML += `<td class="py-2 px-3 border border-gray-300 font-medium text-gray-900">${siswa.nama}</td>`;
-                rowHTML += `<td class="py-2 px-3 border border-gray-300">${siswa.nisn}</td>`;
-                
-                db.daftarMapel.forEach(mapel => {
-                    const nilaiObj = siswa.nilai[mapel] || {};
-                    const nilaiStr = nilaiObj.rapor || '';
-                    const nilai = parseInt(nilaiStr, 10);
-                    if (!isNaN(nilai) && nilaiStr.trim() !== '') {
-                        totalNilai += nilai;
-                        jumlahMapelDenganNilai++;
-                        rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center">${nilai}</td>`;
-                    } else {
-                        rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center">-</td>`;
-                    }
+                // Table Header
+                let headerHTML = '<thead class="text-xs text-gray-700 uppercase bg-gray-100"><tr class="border border-gray-300">';
+                headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">No.</th>';
+                headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">Nama Siswa</th>';
+                headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">NISN</th>';
+
+                // Tambahkan header untuk setiap mapel di semuaMapel
+                semuaMapel.forEach(mapel => {
+                    headerHTML += `<th scope="col" class="py-2 px-3 border border-gray-300 whitespace-nowrap">${mapel}</th>`;
                 });
 
-                const rataRata = jumlahMapelDenganNilai > 0 ? (totalNilai / jumlahMapelDenganNilai).toFixed(2) : '0.00';
-                
-                rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center font-semibold">${totalNilai}</td>`;
-                rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center font-semibold">${rataRata}</td>`;
-                
-                rowHTML += '</tr>';
-                bodyHTML += rowHTML;
-            });
-            bodyHTML += '</tbody>';
-            tableHTML += bodyHTML;
+                headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">Jumlah</th>';
+                headerHTML += '<th scope="col" class="py-2 px-3 border border-gray-300">Rata-rata</th>';
+                headerHTML += '</tr></thead>';
+                tableHTML += headerHTML;
 
-            tableHTML += '</table>';
-            container.innerHTML = tableHTML;
-        }
+                // Table Body
+                let bodyHTML = '<tbody>';
+                db.daftarSiswa.forEach((siswa, index) => {
+                    let totalNilai = 0;
+                    let jumlahMapelDenganNilai = 0;
+                    
+                    let rowHTML = `<tr class="bg-white border-b">`;
+                    rowHTML += `<td class="py-2 px-3 border border-gray-300">${index + 1}</td>`;
+                    rowHTML += `<td class="py-2 px-3 border border-gray-300 font-medium text-gray-900">${siswa.nama}</td>`;
+                    rowHTML += `<td class="py-2 px-3 border border-gray-300">${siswa.nisn || ''}</td>`;
+                    
+                    // Untuk setiap kolom mapel (semuaMapel) ambil nilai dari siswa.nilai[mapel]
+                    semuaMapel.forEach(mapel => {
+                        const nilaiObj = (siswa.nilai && siswa.nilai[mapel]) ? siswa.nilai[mapel] : {};
+                        const nilaiStr = (nilaiObj && nilaiObj.rapor) ? nilaiObj.rapor.toString() : '';
+                        const nilai = parseInt(nilaiStr, 10);
+                        if (!isNaN(nilai) && nilaiStr.trim() !== '') {
+                            totalNilai += nilai;
+                            jumlahMapelDenganNilai++;
+                            rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center">${nilai}</td>`;
+                        } else {
+                            rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center">-</td>`;
+                        }
+                    });
+
+                    const rataRata = jumlahMapelDenganNilai > 0 ? (totalNilai / jumlahMapelDenganNilai).toFixed(2) : '0.00';
+                    
+                    rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center font-semibold">${totalNilai}</td>`;
+                    rowHTML += `<td class="py-2 px-3 border border-gray-300 text-center font-semibold">${rataRata}</td>`;
+                    
+                    rowHTML += '</tr>';
+                    bodyHTML += rowHTML;
+                });
+                bodyHTML += '</tbody>';
+                tableHTML += bodyHTML;
+
+                tableHTML += '</table>';
+                container.innerHTML = tableHTML;
+            }
+
         
         function renderATPTable(fase, mapel) {
             const data = dataATP[fase]?.[mapel];
@@ -1984,49 +2155,20 @@
             lastPageBeforePrint = 'page-input-nilai';
         });
         
-        document.getElementById('btn-download-excel').addEventListener('click', () => {
-            const dataForExcel = [];
-            // Header
-            const header = ['No.', 'Nama Siswa', 'NISN', ...db.daftarMapel, 'Jumlah', 'Rata-rata'];
-            dataForExcel.push(header);
+        document.getElementById('btn-download-pdf').addEventListener('click', () => {
+            window.print();
 
-            // Body
-            db.daftarSiswa.forEach((siswa, index) => {
-                let totalNilai = 0;
-                let jumlahMapelDenganNilai = 0;
-                const row = [index + 1, siswa.nama, siswa.nisn];
-                
-                db.daftarMapel.forEach(mapel => {
-                    const nilaiObj = siswa.nilai[mapel] || {};
-                    const nilaiStr = nilaiObj.rapor || '';
-                    const nilai = parseInt(nilaiStr, 10);
-                    if (!isNaN(nilai) && nilaiStr.trim() !== '') {
-                        totalNilai += nilai;
-                        jumlahMapelDenganNilai++;
-                        row.push(nilai);
-                    } else {
-                        row.push(''); // Push empty string for missing values
-                    }
-                });
+            const options = {
+                margin: 10,
+                filename: 'Rekap_Nilai.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
 
-                const rataRata = jumlahMapelDenganNilai > 0 ? (totalNilai / jumlahMapelDenganNilai).toFixed(2) : '0.00';
-                row.push(totalNilai);
-                row.push(rataRata);
-                dataForExcel.push(row);
-            });
-
-            const worksheet = XLSX.utils.aoa_to_sheet(dataForExcel);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai");
-            
-            if (typeof window.electronAPI !== 'undefined') {
-                const wb_out = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-                window.electronAPI.saveExcel(wb_out);
-            } else {
-                XLSX.writeFile(workbook, "Rekap_Nilai_Siswa.xlsx");
-            }
+           
         });
-
+        
         document.getElementById('back-to-form').addEventListener('click', () => showPage(lastPageBeforePrint));
 
         // --- FUNGSI GENERATE RAPOR ---
